@@ -8,7 +8,7 @@ pip install -r requirements.txt
 jupyter notebook
 ```
 
-The trees from Figure 6a and Supplementary Figure 8 are made in R.
+The trees from Figure 4c, Figure 6a and Supplementary Figure 8 are made in R. The Figure 4c for instance only requires the summary and the tree that is an output of GTDBtk (v220 here, so `gtdbtk.bac120.summary.tsv` and `gtdbtk.backbone.bac120.classify.tree`).
 ```
 Rscript scripts_R/Figure4c.R --tree data/human_longread.tree --summary data/human_longread_summary.tsv --output figures/figure4c_human_gut.pdf
 Rscript scripts_R/Figure4c.R --tree data/sludge.tree --summary data/sludge_summary.tsv --output figures/figure4c_sludge.pdf
