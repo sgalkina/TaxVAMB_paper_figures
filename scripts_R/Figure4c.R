@@ -36,7 +36,7 @@ if (is.null(opt$tree) | is.null(opt$summary) | is.null(opt$output)) {
 }
 
 tree1 <- read.newick(opt$tree)
-tree1 <- drop.tip(tree1, grep("^(vamb_)?S._", tree1$tip.label, invert = TRUE, value = TRUE))
+tree1 <- drop.tip(tree1, grep("^(VAMB|SemiBin|TaxVAMB)", tree1$tip.label, invert = TRUE, value = TRUE))
 
 summary_data <- read.table(opt$summary, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
 
@@ -47,16 +47,17 @@ summary_data <- summary_data %>%
 summary_data <- summary_data %>%
     separate(classification, into = c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"), sep = ";")
 
+print(summary_data)
 data <- summary_data %>%
   mutate(
-    pattern1 = str_extract(user_genome, ".*vamb.*"),
-    pattern2 = str_extract(user_genome, ".*SemiBin.*"),
+    pattern1 = str_extract(user_genome, "^(VAMB)"),
+    pattern2 = str_extract(user_genome, "^(SemiBin)"),
   )
 
 data <- summary_data %>% mutate (
     id_source = case_when(
       !is.na(data$pattern1) ~ "VAMB",
-      !is.na(data$pattern2) ~ "SemiBin2",
+      !is.na(data$pattern2) ~ "SemiBin",
       TRUE ~ "TaxVAMB"
     )
   )
@@ -83,7 +84,7 @@ df2_vamb$VAMB <- df_agg$VAMB
 
 df_total <- merge(df2, df2_vamb, by=vec, all.x=TRUE, all.y=TRUE)
 
-df <- subset(data, id_source == 'SemiBin2')
+df <- subset(data, id_source == 'SemiBin')
 df_agg <- df %>% group_by(Kingdom, Phylum, Class, Order, Family, Genus, Species) %>% 
   summarise(SemiBin2=n())
 df2_vamb <- df %>% distinct(Kingdom, Phylum, Class, Order, Family, Genus, Species, .keep_all = TRUE)
